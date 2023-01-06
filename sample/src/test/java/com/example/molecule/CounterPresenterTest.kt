@@ -18,7 +18,9 @@ package com.example.molecule
 import app.cash.molecule.RecompositionClock
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -33,6 +35,7 @@ class CounterPresenterTest {
     moleculeFlow(clock = RecompositionClock.Immediate) {
       CounterPresenter(events.receiveAsFlow(), randomService)
     }
+      .flowOn(Dispatchers.Main)
       .test {
         assertEquals(CounterModel(0, false), awaitItem())
         events.send(Change(+1))
